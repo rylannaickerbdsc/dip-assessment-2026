@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from task import Task
 
-# Main in memory list to store Task objects
+# Main in-memory list to store Task objects
 tasks = []
 
 
@@ -35,7 +35,7 @@ def add_task():
     priority_box.delete(0, tk.END)
 
 
-# window
+#window
 window = tk.Tk()
 window.title("Study System - Version 2")
 window.geometry("350x460")
