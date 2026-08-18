@@ -1,14 +1,32 @@
 import tkinter as tk
+from tkinter import messagebox
+from task import Task
 
+# Main in memory list to store Task objects
 tasks = []
 
 
 def add_task():
-    task_name = task_box.get()
-    if task_name != "":
-        tasks.append(task_name)
-        task_list.insert(tk.END, task_name)
-        task_box.delete(0, tk.END)
+    name = name_box.get().strip()
+    mins = mins_box.get().strip()
+    priority = priority_box.get().strip().title() or "Med"
+
+    # Valid input Check 1: Empty Task Name
+    if not name:
+        messagebox.showerror("Input Error", "Please enter a task name!")
+        return
+
+    # Valid input Check 2: Invalid or non-positive minutes
+    if not mins.isdigit() or int(mins) <= 0:
+        messagebox.showerror("Input Error", "Minutes must be a positive whole number!")
+        return
+
+    # Create Task object and store in Python list
+    new_task = Task(name, int(mins), priority)
+    tasks.append(new_task)
+
+    # Display formatted string in Listbox
+    task_list.insert(tk.END, new_task.get_details())
 
 
 #window
@@ -19,7 +37,7 @@ window.geometry("350x460")
 # Heading
 tk.Label(window, text="My Study System", font=("Arial", 14, "bold")).pack(pady=10)
 
-# Input 1: Task Name
+# Input  1: Task Name
 tk.Label(window, text="Task Name:").pack(anchor="w", padx=30)
 name_box = tk.Entry(window, width=34)
 name_box.pack(pady=3)
