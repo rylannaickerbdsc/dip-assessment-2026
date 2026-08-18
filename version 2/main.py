@@ -1,42 +1,53 @@
 import tkinter as tk
 
-# A list to keep track of tasks in memory
 tasks = []
 
 
 def add_task():
-    # Get whatever text was typed into the box
     task_name = task_box.get()
-
-    # Make sure the box isn't empty
     if task_name != "":
-        tasks.append(task_name)  # Save it to our list
-        task_list.insert(tk.END, task_name)  # Display it on the screen
-        task_box.delete(0, tk.END)  # Clear the text box for the next task
+        tasks.append(task_name)
+        task_list.insert(tk.END, task_name)
+        task_box.delete(0, tk.END)
 
 
-# window
+#window
 window = tk.Tk()
 window.title("Study System - Version 2")
-window.geometry("320x350")
+window.geometry("350x460")
 
-# Title at the top
-title_label = tk.Label(
-    window, text="My Study System", font=("Arial", 14, "bold")
+# Heading
+tk.Label(window, text="My Study System", font=("Arial", 14, "bold")).pack(pady=10)
+
+# Input 1: Task Name
+tk.Label(window, text="Task Name:").pack(anchor="w", padx=30)
+name_box = tk.Entry(window, width=34)
+name_box.pack(pady=3)
+
+# Input  2: Duration (Minutes)
+tk.Label(window, text="Time Needed (mins):").pack(anchor="w", padx=30)
+mins_box = tk.Entry(window, width=34)
+mins_box.pack(pady=3)
+
+# Input  3: Priority
+tk.Label(window, text="Priority (Low / Med / High):").pack(anchor="w", padx=30)
+priority_box = tk.Entry(window, width=34)
+priority_box.pack(pady=3)
+
+# Action Button
+add_button = tk.Button(
+    window,
+    text="Add Task",
+    command=add_task,
+    bg="#4CAF50",
+    fg="white",
+    font=("Arial", 10, "bold"),
 )
-title_label.pack(pady=10)
+add_button.pack(pady=12)
 
-# Text box to type task names
-task_box = tk.Entry(window, width=28)
-task_box.pack(pady=5)
+# Display Area
+tk.Label(window, text="Your Tasks:").pack(anchor="w", padx=30)
+task_list = tk.Listbox(window, width=38, height=8)
+task_list.pack(pady=5)
 
-# Add Task Button
-add_button = tk.Button(window, text="Add Task", command=add_task)
-add_button.pack(pady=5)
-
-# List box to show added tasks
-task_list = tk.Listbox(window, width=32, height=10)
-task_list.pack(pady=10)
-
-# Keep the window open
 window.mainloop()
