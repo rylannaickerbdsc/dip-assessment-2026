@@ -17,7 +17,7 @@ def add_task():
 
 # window
 window = tk.Tk()
-window.title("Study System - Version 1")
+window.title("Study System - Version 2")
 window.geometry("320x350")
 
 # Title at the top
