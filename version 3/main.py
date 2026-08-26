@@ -1,14 +1,42 @@
+import os
 import tkinter as tk
 from tkinter import messagebox
 from task import Task
+
+# Path to persistent data file
+FILE_NAME = "tasks.txt"
 
 # Main in-memory list to store Task objects
 tasks = []
 
 
+def load_tasks_from_file():
+    """Reads tasks.txt on startup and rebuilds the tasks list."""
+    if not os.path.exists(FILE_NAME):
+        return
+
+    with open(FILE_NAME, "r") as file:
+        for line in file:
+            parts = line.strip().split(",")
+            if len(parts) == 4:
+                name, subject, duration, priority = parts
+                if duration.isdigit():
+                    task = Task(name, subject, int(duration), priority)
+                    tasks.append(task)
+                    task_list.insert(tk.END, task.get_details())
+
+
+def save_tasks_to_file():
+    """Overwrites tasks.txt with the current list of tasks."""
+    with open(FILE_NAME, "w") as file:
+        for task in tasks:
+            file.write(task.to_file_line())
+
+
 def add_task():
     """Validates input fields, instantiates Task object, and updates GUI list."""
     name = name_box.get().strip()
+    subject = "General"  # Temporary default until UI field is added
     mins = mins_box.get().strip()
     priority = priority_box.get().strip().title() or "Med"
 
@@ -23,8 +51,9 @@ def add_task():
         return
 
     # Create Task object and store in Python list
-    new_task = Task(name, int(mins), priority)
+    new_task = Task(name, subject, int(mins), priority)
     tasks.append(new_task)
+    save_tasks_to_file()
 
     # Display formatted string in Listbox
     task_list.insert(tk.END, new_task.get_details())
@@ -35,9 +64,9 @@ def add_task():
     priority_box.delete(0, tk.END)
 
 
-#window
+# window
 window = tk.Tk()
-window.title("Study System - Version 2")
+window.title("Study System - Version 2.1")
 window.geometry("350x460")
 
 # Heading
@@ -73,5 +102,8 @@ add_button.pack(pady=12)
 tk.Label(window, text="Your Tasks:").pack(anchor="w", padx=30)
 task_list = tk.Listbox(window, width=38, height=8)
 task_list.pack(pady=5)
+
+# Load file data at startup
+load_tasks_from_file()
 
 window.mainloop()
