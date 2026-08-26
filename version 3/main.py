@@ -36,21 +36,25 @@ def save_tasks_to_file():
 def add_task():
     """Validates input fields, instantiates Task object, and updates GUI list."""
     name = name_box.get().strip()
-    subject = "General"  # Temporary default until UI field is added
+    subject = subject_box.get().strip().title()
     mins = mins_box.get().strip()
-    priority = priority_box.get().strip().title() or "Med"
+    priority = priority_var.get()
 
-    # Valid input Check 1: Empty Task Name
-    if not name:
-        messagebox.showerror("Input Error", "Please enter a task name!")
+    # Validation 1: Blank entries
+    if not name or not subject:
+        messagebox.showerror(
+            "Input Error", "Please fill in both Task Name and Subject!"
+        )
         return
 
-    # Valid input Check 2: Invalid or non-positive minutes
+    # Validation 2: Numeric duration check
     if not mins.isdigit() or int(mins) <= 0:
-        messagebox.showerror("Input Error", "Minutes must be a positive whole number!")
+        messagebox.showerror(
+            "Input Error", "Minutes must be a positive whole number!"
+        )
         return
 
-    # Create Task object and store in Python list
+    # Instantiate task and save
     new_task = Task(name, subject, int(mins), priority)
     tasks.append(new_task)
     save_tasks_to_file()
@@ -58,34 +62,50 @@ def add_task():
     # Display formatted string in Listbox
     task_list.insert(tk.END, new_task.get_details())
 
-    # Clear input boxes
+    # Clear text fields
     name_box.delete(0, tk.END)
+    subject_box.delete(0, tk.END)
     mins_box.delete(0, tk.END)
-    priority_box.delete(0, tk.END)
 
 
-# window
+# window setup
 window = tk.Tk()
-window.title("Study System - Version 2.1")
-window.geometry("350x460")
+window.title("Study System - Version 2.2")
+window.geometry("380x500")
 
 # Heading
-tk.Label(window, text="My Study System", font=("Arial", 14, "bold")).pack(pady=10)
+tk.Label(window, text="My Study Planner", font=("Arial", 14, "bold")).pack(pady=10)
 
-# Input 1: Task Name
+# Input Field 1: Task Name
 tk.Label(window, text="Task Name:").pack(anchor="w", padx=30)
-name_box = tk.Entry(window, width=34)
-name_box.pack(pady=3)
+name_box = tk.Entry(window, width=38)
+name_box.pack(pady=2)
 
-# Input 2: Duration (Minutes)
+# Input Field 2: Subject
+tk.Label(window, text="Subject (e.g., Math, Science):").pack(anchor="w", padx=30)
+subject_box = tk.Entry(window, width=38)
+subject_box.pack(pady=2)
+
+# Input Field 3: Duration (Minutes)
 tk.Label(window, text="Time Needed (mins):").pack(anchor="w", padx=30)
-mins_box = tk.Entry(window, width=34)
-mins_box.pack(pady=3)
+mins_box = tk.Entry(window, width=38)
+mins_box.pack(pady=2)
 
-# Input 3: Priority
-tk.Label(window, text="Priority (Low / Med / High):").pack(anchor="w", padx=30)
-priority_box = tk.Entry(window, width=34)
-priority_box.pack(pady=3)
+# Input Field 4: Priority (Radio Buttons)
+tk.Label(window, text="Priority:").pack(anchor="w", padx=30)
+radio_frame = tk.Frame(window)
+radio_frame.pack(pady=2)
+
+priority_var = tk.StringVar(value="Med")
+tk.Radiobutton(
+    radio_frame, text="High", variable=priority_var, value="High"
+).pack(side="left", padx=10)
+tk.Radiobutton(
+    radio_frame, text="Med", variable=priority_var, value="Med"
+).pack(side="left", padx=10)
+tk.Radiobutton(
+    radio_frame, text="Low", variable=priority_var, value="Low"
+).pack(side="left", padx=10)
 
 # Action Button
 add_button = tk.Button(
@@ -94,16 +114,17 @@ add_button = tk.Button(
     command=add_task,
     bg="#4CAF50",
     fg="white",
-    font=("Arial", 10, "bold"),
+    font=("Arial", 9, "bold"),
+    width=15,
 )
-add_button.pack(pady=12)
+add_button.pack(pady=10)
 
 # Display Area
 tk.Label(window, text="Your Tasks:").pack(anchor="w", padx=30)
-task_list = tk.Listbox(window, width=38, height=8)
+task_list = tk.Listbox(window, width=42, height=8)
 task_list.pack(pady=5)
 
-# Load file data at startup
+# Load existing tasks when launching app
 load_tasks_from_file()
 
 window.mainloop()
