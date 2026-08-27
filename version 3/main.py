@@ -3,11 +3,18 @@ import tkinter as tk
 from tkinter import messagebox
 from task import Task
 
-# File name for saving tasks
 FILE_NAME = "tasks.txt"
-
-# Task object list stored in memory
 tasks = []
+
+# COLOR PALETTE
+BG_MAIN = "#FDEED0"  
+BG_CARD = "#FFFFFF"  
+TEXT_MAIN = "#4D250E"     
+TEXT_MUTED = "#4D250E"   
+ACCENT_HEADER = "#4D250E"  
+SELECT_BG = "#E0E7FF"  
+SELECT_FG = "#3730A3"  
+BORDER_COLOR = "#4D250E"   
 
 
 # --- FILE STORAGE LOGIC ---
@@ -64,28 +71,23 @@ def add_task():
     mins = mins_box.get().strip()
     priority = priority_var.get()
 
-    # Validation: Check empty inputs
     if not name or not subject:
         messagebox.showerror(
             "Input Error", "Please fill in both Task Name and Subject!"
         )
         return
 
-    # Validation: Check numeric time
     if not mins.isdigit() or int(mins) <= 0:
         messagebox.showerror(
             "Input Error", "Minutes must be a positive whole number!"
         )
         return
 
-    # Create task object and append to list
     new_task = Task(name, subject, int(mins), priority)
     tasks.append(new_task)
 
-    # Sort high priority tasks to top automatically
     sort_by_priority()
 
-    # Clear input fields
     name_box.delete(0, tk.END)
     subject_box.delete(0, tk.END)
     mins_box.delete(0, tk.END)
@@ -110,87 +112,174 @@ def mark_done():
 # --- APPLICATION INTERFACE ---
 window = tk.Tk()
 window.title("Study System - Version 3 Final")
-window.geometry("380x570")
+window.geometry("410x600")
+window.configure(bg=BG_MAIN)
 
-# Header
-tk.Label(window, text="My Study Planner", font=("Arial", 14, "bold")).pack(
-    pady=10
+# Main Title Header
+tk.Label(
+    window,
+    text="My Study Planner",
+    font=("Segoe UI", 16, "bold"),
+    fg=ACCENT_HEADER,
+    bg=BG_MAIN,
+).pack(pady=(16, 12))
+
+# Task Name Field
+tk.Label(
+    window,
+    text="TASK NAME",
+    font=("Segoe UI", 8, "bold"),
+    fg=TEXT_MUTED,
+    bg=BG_MAIN,
+).pack(anchor="w", padx=36)
+name_box = tk.Entry(
+    window,
+    width=38,
+    bg=BG_CARD,
+    fg=TEXT_MAIN,
+    relief="flat",
+    highlightthickness=1,
+    highlightbackground=BORDER_COLOR,
+    highlightcolor=ACCENT_HEADER,
+    font=("Segoe UI", 9),
 )
+name_box.pack(pady=(2, 8), ipady=3)
 
-# Task Name Input
-tk.Label(window, text="Task Name:").pack(anchor="w", padx=30)
-name_box = tk.Entry(window, width=38)
-name_box.pack(pady=2)
-
-# Subject Input
-tk.Label(window, text="Subject (e.g., Math, Science):").pack(
-    anchor="w", padx=30
+# Subject Field
+tk.Label(
+    window,
+    text="SUBJECT (E.G. MATH, SCIENCE)",
+    font=("Segoe UI", 8, "bold"),
+    fg=TEXT_MUTED,
+    bg=BG_MAIN,
+).pack(anchor="w", padx=36)
+subject_box = tk.Entry(
+    window,
+    width=38,
+    bg=BG_CARD,
+    fg=TEXT_MAIN,
+    relief="flat",
+    highlightthickness=1,
+    highlightbackground=BORDER_COLOR,
+    highlightcolor=ACCENT_HEADER,
+    font=("Segoe UI", 9),
 )
-subject_box = tk.Entry(window, width=38)
-subject_box.pack(pady=2)
+subject_box.pack(pady=(2, 8), ipady=3)
 
-# Duration Input
-tk.Label(window, text="Time Needed (mins):").pack(anchor="w", padx=30)
-mins_box = tk.Entry(window, width=38)
-mins_box.pack(pady=2)
+# Duration Field
+tk.Label(
+    window,
+    text="TIME NEEDED (MINUTES)",
+    font=("Segoe UI", 8, "bold"),
+    fg=TEXT_MUTED,
+    bg=BG_MAIN,
+).pack(anchor="w", padx=36)
+mins_box = tk.Entry(
+    window,
+    width=38,
+    bg=BG_CARD,
+    fg=TEXT_MAIN,
+    relief="flat",
+    highlightthickness=1,
+    highlightbackground=BORDER_COLOR,
+    highlightcolor=ACCENT_HEADER,
+    font=("Segoe UI", 9),
+)
+mins_box.pack(pady=(2, 8), ipady=3)
 
-# Priority Options (Radio Buttons)
-tk.Label(window, text="Priority:").pack(anchor="w", padx=30)
-radio_frame = tk.Frame(window)
-radio_frame.pack(pady=2)
+# Priority Radio Buttons
+tk.Label(
+    window,
+    text="PRIORITY LEVEL",
+    font=("Segoe UI", 8, "bold"),
+    fg=TEXT_MUTED,
+    bg=BG_MAIN,
+).pack(anchor="w", padx=36)
+radio_frame = tk.Frame(window, bg=BG_MAIN)
+radio_frame.pack(pady=(2, 8))
 
 priority_var = tk.StringVar(value="Med")
-tk.Radiobutton(
-    radio_frame, text="High", variable=priority_var, value="High"
-).pack(side="left", padx=10)
-tk.Radiobutton(
-    radio_frame, text="Med", variable=priority_var, value="Med"
-).pack(side="left", padx=10)
-tk.Radiobutton(
-    radio_frame, text="Low", variable=priority_var, value="Low"
-).pack(side="left", padx=10)
+for prio in ["High", "Med", "Low"]:
+    tk.Radiobutton(
+        radio_frame,
+        text=prio,
+        variable=priority_var,
+        value=prio,
+        bg=BG_MAIN,
+        fg=TEXT_MAIN,
+        activebackground=BG_MAIN,
+        highlightbackground=BG_MAIN,
+        font=("Segoe UI", 9),
+    ).pack(side="left", padx=12)
 
-# Add Task Button (Clear text styling)
+# Add Task Button (highlightbackground removes outer dark box on macOS)
 add_button = tk.Button(
     window,
     text="Add Task",
     command=add_task,
-    font=("Arial", 9, "bold"),
-    width=15,
+    font=("Segoe UI", 9, "bold"),
+    width=16,
+    highlightbackground=BG_MAIN,
+    cursor="hand2",
 )
-add_button.pack(pady=8)
+add_button.pack(pady=6)
 
-# Sorting Control Buttons
-sort_frame = tk.Frame(window)
-sort_frame.pack(pady=2)
+# Sorting Control Buttons (highlightbackground removes outer dark box on macOS)
+sort_frame = tk.Frame(window, bg=BG_MAIN)
+sort_frame.pack(pady=4)
 tk.Button(
     sort_frame,
     text="Sort by Priority",
     command=sort_by_priority,
-    font=("Arial", 8),
-).pack(side="left", padx=4)
+    font=("Segoe UI", 8),
+    highlightbackground=BG_MAIN,
+    cursor="hand2",
+).pack(side="left", padx=5)
 tk.Button(
     sort_frame,
     text="Sort by Subject",
     command=sort_by_subject,
-    font=("Arial", 8),
-).pack(side="left", padx=4)
+    font=("Segoe UI", 8),
+    highlightbackground=BG_MAIN,
+    cursor="hand2",
+).pack(side="left", padx=5)
 
-# Display Listbox
-tk.Label(window, text="Your Tasks:").pack(anchor="w", padx=30, pady=(10, 0))
-task_list = tk.Listbox(window, width=42, height=9)
-task_list.pack(pady=5)
+# Display Listbox Section
+tk.Label(
+    window,
+    text="CURRENT TASKS",
+    font=("Segoe UI", 8, "bold"),
+    fg=TEXT_MUTED,
+    bg=BG_MAIN,
+).pack(anchor="w", padx=36, pady=(10, 2))
 
-# Mark Done Button (Clear text styling)
+task_list = tk.Listbox(
+    window,
+    width=42,
+    height=7,
+    bg=BG_CARD,
+    fg=TEXT_MAIN,
+    selectbackground=SELECT_BG,
+    selectforeground=SELECT_FG,
+    relief="flat",
+    highlightthickness=1,
+    highlightbackground=BORDER_COLOR,
+    font=("Consolas", 9),
+)
+task_list.pack(pady=4)
+
+# Mark Done Button (highlightbackground removes outer dark box on macOS)
 done_button = tk.Button(
     window,
     text="✓ Mark Done / Delete",
     command=mark_done,
-    font=("Arial", 9, "bold"),
+    font=("Segoe UI", 9, "bold"),
+    highlightbackground=BG_MAIN,
+    cursor="hand2",
 )
-done_button.pack(pady=5)
+done_button.pack(pady=(4, 15))
 
-# Load saved items when app launches
+# Load saved items on launch
 load_tasks_from_file()
 
 window.mainloop()

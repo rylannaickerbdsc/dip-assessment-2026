@@ -1,1 +1,6 @@
-Complex Numbers Past Papers,Calculus,240,Med
+Electricty Revising,Physics,300,High
+Differentiation Past Paper,Calculus,60,Med
+Complex Numbers Past Paper,Calculus,60,Med
+Integration Past Paper,Calculus,60,Med
+Mechanics Revising,Physics,300,Med
+Waves Revising,Physics,180,Low
